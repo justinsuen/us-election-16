@@ -1,0 +1,161 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title>STAT 133 - Final Project; For the Kingdom</title>
+
+  <style type="text/css">
+  @import url(http://fonts.googleapis.com/css?family=Arvo:400,400italic|Raleway:700,500,300|Merriweather:400);
+  body {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+  #headban {
+    padding: 5px 100px 20px 100px;
+    background-color: 3E76CC;
+    text-align: center;
+  }
+  #content {
+    width: 70%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  h1, h2 {
+    font-family: Raleway, Helvetica, Geneva, Arial, SunSans-Regular, sans-serif;
+  }
+  h1 {
+    color: 000099;
+    font-weight: 500;
+  }
+  h2 {
+    color: 0033CC;
+    font-weight: 400;
+  }
+  h3 {
+    font-family: Arvo;
+    font-weight: 300;
+    font-size: 30px;
+    padding: 0;
+    margin: 0;
+  }
+  h4 {
+    font-family: Arvo;
+    font-weight: 300;
+    font-size: 15px;
+    color: 333333;
+    padding: 0;
+    margin: 0;
+  }
+  p, ul, tr, figcaption {
+    font-family: Merriweather;
+    font-size: 80%;
+  }
+  figcaption {
+    font-style: italic;
+  }
+  figure img {
+    height: 550px;
+    width: 90%;
+  }
+
+  table, th, td {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  #graphtb p {
+    font-size: 15px;
+  }
+
+  * {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  </style>
+</head>
+
+<body>
+<div id="headban">
+<h1>US Presidential Election Prediction Using Recursive Partitioning and Nearest Neighbors</h1>
+
+<h3>Team For the Kingdom</h3>
+<h4>Joseph Pereira, Edward Liu, Justin Suen, Nicole Lee, Koki Saito</h4>
+</div>
+
+<div id="content">
+<h2>Introduction</h2>
+
+<p>Ever since 1792, the United States of America has been holding its presidential election quadrennially. In two years, the 58th presidential election will be held. The question of who will win is asked by many. But how can anyone possibly answer such an impactful question? Well, with statistics, such freedom is possible. In fact, freedom to any degree is possible. Alas, as students of Berkeley taking Stat 133, we have created two predictors using recursive partitioning and k-nearest neighbors methods.</p>
+
+<h2>Predictors</h2>
+
+<p><i>Recursive Partitioning</i> - This method generates a decision tree that classifies the population based on dichotomous independent features. To do this in R, we use the rpart() function. An example of this method used for voter preference prediction would be as follows. If a voter is hispanic, wealthy, and doesn't speak English, he would most likely vote for the Republican candidate. For our predictor, we looked at several features and picked a few that worked best.</p>
+<p><i>k-Nearest Neighbors</i> - As instructed, we chose the geography of the county to be one of our determining features for calculating the Euclidean distance between counties. Other features we used include black population, population under the poverty line, non-English speakers, etc. We used percentages of those features instead of the actual number so that we don't have to write extra code normalizing them. However, for longitudes and latitudes, we divided the numbers by 1,000,000 to normalize them. Also, we used knn.cv() instead of knn() to omit the county itself when finding its neighbors.</p>
+
+<h2>Graphs and Observations</h2>
+
+<div id="graphtb">
+<table style="width:100%">
+  <tr>
+    <td><p>We wrote a function called plotMiscalc() to find and plot the proportion of misclassified counties using different pairs of features. Within the function, we ran a for loop to loop through 1 to 50 as k values. Using sapply(), we divided the number of the wrongly classified counties over the total number of counties for each k value. We used seven different pairs of features as shown in the legend below.</p>
+    <p>We chose our pairs of features based on our research into major factors of party affiliation. We hypothesized that socioeconomic status, race and level of education would be features that were determine affiliation. Our hypothesis was confirmed once we ran our function. Out of the pairs we chose, the pair consisting of percentage of population that is African American and percentage of population that is below the poverty line performed the best i.e. there were the least misclassified counties.</p>
+    <p>When we ran the function, we noticed that for low values of k, the misclassification rate tends to be higher. This is because with too few neighbors, it is very hard to see the pattern or the trend of whether the county will be Democrat or Republican. Also, as k increased to higher values (>50), the misclassification rate began to creep up. This would be because as we increase the number of neighbors, the number of less relevant neighbors will increase too, making the prediction less accurate.</p></td>
+  </tr>
+  <tr>  
+    <td><figure align="center">
+    <img src="miscalcs.png"/>
+    <figcaption>Fig 1. Misclassification of voter party preference using knn()</figcaption>
+    </figure>
+    </td> 
+  </tr>
+  <tr>
+    <td><p>We created an RPartitions tree with features that were common predictors of political parties. The most effective predictor was income people with very high incomes tended to vote republican. Then education people with high education tended to vote republican (this was in a different branch from the income branch which would suggest that those 2 could be correlated significantly). After income comes a branch on unemployment saying if there is a low income and high unemployment, it tends to be republican, but if it's lower unemployment it tends to be Democrat. We can also see that Non English speakers tend to affect parties.  An interesting thing to note is that the graph tends to put features that make sense together: together, this would lead us to believe that it works well (income and unemployment together, non-English speakers and bachelor degrees together etc.)</p></td>
+  </tr>
+  <tr>  
+    <td><figure align="center">
+    <img src="rpartplot.png"/>
+    <figcaption>Fig 2. Plot generated by recursive partitioning</figcaption>
+    </figure></td> 
+  </tr>
+  <tr>
+    <td><p>The main motivation of plotting variability against the magnitude of change in voting preference was to find a possible correlation between variance of features and how the candidates targetted their audience. A feature that has a high magnitude of change should be targetted. Additionally, if it has a low variance, it is easiest for a campaign to focus. In other words, a high variance in the feature with a small effect on magnitude would be an indicator that it was not a feature that was highly targetted by a campaign.</p>
+    <p>Another motivation of doing so was to find features that would work well as a predictor. We wanted to find predictors that would best predict voter preference in a nearest neighbors method. Similar to the above explanation, if it had small magnitude of voter shift and high variance, it was an indication that it is not an accurate feature for prediction.</p></td>
+  </tr>
+  <tr>  
+    <td><figure align="center">
+    <img src="varvsmag.png"/>
+    <figcaption>Fig 3. Variability features vs. magnitude in voter preference change</figcaption>
+    </figure></td> 
+  </tr>
+  <tr>
+    <td><p>Counties with extreme values for any feature are polarized to one political party or the other such that counties with high percentages of African American population or high percentages of non-English speakers are either on average >70% Democrat or less than 30% Democrat. Certain distinguishable features like Average Household Size stay relatively constant at a Democratic voting percentage of ~40%, from which we can infer that average household size does not have a large impact on party orientation. Counties with middle values of Percentage below poverty line also do not affect percentage voting Democratic, but counties with more extreme values of poverty levels begin to polarize to either extremely Republican or extremely Democrat, which reflect the polarized way that either party attracts and caters to different counties with specific demographic properties.</p></td>
+  </tr>  
+  <tr>
+    <td><figure align="center">
+    <img src="partyvsfeat.png"/>
+    <figcaption>Fig 4. Party preference based on specific features</figcaption>
+    </figure></td> 
+  </tr>
+  <tr>
+    <td><p>We created a geospatial map of the United States and overlaid information about the voter shift that compares the change in votes from 2004 to 2012 by creating an arrow for each county with length proportional to the vote shift. When we look at the map we can observe: Texas, Missouri, Oklahoma, Tennessee, West Virginia, Kentucky and Utah were the only states to lean more Republican in the Election. Most other states were either mixed (regionally that is to say that counties close to each other shifted together but different parts of the state shifted different ways) or the state just shifted slightly democratic as a whole. Vermont, New York, Florida, Wisconsin, Mississippi shifted majorly democratic, this may be because of increased urbanization in these areas with the exception of Wisconsin and Florida (in the Florida election in 2004 Bush's relative was governor and had influence so it swung majorly Republican in 2004, causing it to naturally swing back in 2012, and Wisconsin was a tight race so Obama did much more campaigning in 2012 there than usual: causing a much larger shift than general). In western states (west of Kansas, with the exception of Utah where Romney was born) the majority of arrows were strong blue meaning there was a major shift from Republican to Democrat. This is probably because Romney was far from the center (politically) and the West is fairly independent (or centrist politically) i.e. voters tend to with the more centrist candidate.</p>
+    <p>Note: Virginia does not have any arrows because there was no data in the 2004 results file for Virginia.</p></td>
+  </tr>
+  <tr>  
+    <td><figure align="center">
+    <img src="fancyplot.png"/>
+    <figcaption>Fig 5. Changes in votes from 2004 to 2012</figcaption>
+    </figure></td> 
+  </tr>
+</table>
+</div>
+</div>
+<div id="headban">
+<h1>Thank you for your time!</h1>
+<h3>Stat 133 Fall 2014 with Hank Ibser</h3>
+</div>
+
+</body> </html>
